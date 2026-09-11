@@ -1,0 +1,19 @@
+<p>validator-facial works!</p>
+
+<div class="biometria-card">
+    <h2>Verificación de Identidad</h2>
+    <p class="status-badge">{{ estadoMensaje }}</p>
+
+    <div class="video-wrapper">
+        <!-- Stream en vivo -->
+        <video #videoElement autoplay playsinline></video>
+        <!-- Canvas fantasma para recortar la foto -->
+        <canvas #canvasElement style="display: none;" width="640" height="480"></canvas>
+    </div>
+
+    <div class="actions">
+        <button (click)="ejecutarEscaneo()" [disabled]="cargando">
+            {{ cargando ? 'Procesando...' : 'Escanear Rostro' }}
+        </button>
+    </div>
+</div>
