@@ -11,33 +11,56 @@ import { Subscription } from 'rxjs';
 })
 export class ValidatorFacialComponent {
 
-    @ViewChild('videoElement', { static: true }) videoElement!: ElementRef<HTMLVideoElement>;
+  @ViewChild('videoElement', { static: true }) videoElement!: ElementRef<HTMLVideoElement>;
   @ViewChild('canvasElement', { static: true }) canvasElement!: ElementRef<HTMLCanvasElement>;
 
   stream: MediaStream | null = null;
   estadoMensaje: string = 'Iniciando cámara...';
   cargando: boolean = false;
-  
+
+  private mediaStream: MediaStream | null = null;
+
   private biometriaSub?: Subscription;
 
-  constructor(private biometriaService: BiometriaDomainService) {}
+  constructor(private biometriaService: BiometriaDomainService) { }
 
   ngOnInit(): void {
-    this.activarCamaraWeb();
+    // this.activarCamaraWeb();
   }
 
-  activarCamaraWeb(): void {
-    navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } })
-      .then((mediaStream) => {
-        this.stream = mediaStream;
-        this.videoElement.nativeElement.srcObject = mediaStream;
-        this.estadoMensaje = '📷 Cámara lista. Coloca tu rostro frente a la pantalla.';
-      })
-      .catch((error) => {
-        this.estadoMensaje = '❌ No se pudo acceder a la cámara web. Verifica los permisos.';
-        console.error('Error webcam:', error);
-      });
+  // activarCamaraWeb(): void {
+  //   navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } })
+  //     .then((mediaStream) => {
+  //       this.stream = mediaStream;
+  //       this.videoElement.nativeElement.srcObject = mediaStream;
+  //       this.estadoMensaje = '📷 Cámara lista. Coloca tu rostro frente a la pantalla.';
+  //     })
+  //     .catch((error) => {
+  //       this.estadoMensaje = '❌ No se pudo acceder a la cámara web. Verifica los permisos.';
+  //       console.error('Error webcam:', error);
+  //     });
+  // }
+
+  // Activar la cámara
+  public async activarCamara(): Promise<void> {
+    try {
+      this.mediaStream = await navigator.mediaDevices.getUserMedia({ video: true });
+      this.videoElement.nativeElement.srcObject = this.mediaStream;
+    } catch (error) {
+      console.error('No se pudo acceder a la cámara:', error);
+    }
   }
+
+
+  // Desactivar la cámara
+  public desactivarCamara(): void {
+    if (this.mediaStream) {
+      this.mediaStream.getTracks().forEach(track => track.stop());
+      this.videoElement.nativeElement.srcObject = null;
+      this.mediaStream = null;
+    }
+  }
+
 
   ejecutarEscaneo(): void {
     const video = this.videoElement.nativeElement;

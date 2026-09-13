@@ -1,0 +1,50 @@
+.texto-movimiento {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+  /* Llama a la animación: nombre, duración, repetición y tipo de aceleración */
+  animation: flotar 2s ease-in-out infinite;
+}
+
+/* Define los fotogramas clave de la animación */
+@keyframes flotar {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px); /* Se mueve hacia arriba */
+  }
+  100% {
+    transform: translateY(0); /* Regresa a la posición inicial */
+  }
+}
+
+/* PARA LAS LETRAS CON EFECTOS DE OLA   */
+.texto-ola {
+  font-size: 3rem;
+  font-weight: bold;
+  display: flex; /* Mantiene las letras juntas en línea */
+}
+
+.texto-ola span {
+  display: inline-block;
+  color: #3498db;
+  /* Aplica la animación */
+  animation: ola 1.5s ease-in-out infinite;
+  /* Calcula el retraso usando la variable --i del HTML */
+  animation-delay: calc(0.1s * var(--i));
+}
+
+/* Efecto de la ola: se eleva y luego vuelve a su lugar */
+@keyframes ola {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  20% {
+    transform: translateY(-20px); /* Altura de la ola */
+    color: #e74c3c; /* Opcional: cambia de color al subir */
+  }
+  40% {
+    transform: translateY(0);
+  }
+}
