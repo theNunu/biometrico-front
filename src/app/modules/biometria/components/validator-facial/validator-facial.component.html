@@ -22,7 +22,23 @@
         </button>
     </div>
 </div>
-<h2>MAS PRUEBAS</h2>
+
+
+<!-- Contenedor del resultado (Solo se muestra si resultadoBackend tiene datos) -->
+<div *ngIf="resultadoBackend" class="resultado-box">
+  <h3>📊 Resultado del Análisis Biométrico:</h3>
+  
+  <p><strong>¿Operación exitosa?:</strong> {{ resultadoBackend.success ? 'Sí' : 'No' }}</p>
+  
+  <p><strong>¿Es la misma persona?:</strong> 
+    <span [style.color]="resultadoBackend.es_la_misma_persona ? 'green' : 'red'">
+      {{ resultadoBackend.es_la_misma_persona ? '✅ IDENTIDAD VERIFICADA' : '❌ NO ES LA MISMA PERSONA' }}
+    </span>
+  </p>
+
+  <p><strong>Distancia matemática (Umbral):</strong> {{ resultadoBackend.distancia_matematica }}</p>
+</div>
+<h2> ----- MAS PRUEBAS de  letras -----</h2>
 <h1 class="texto-movimiento">¡Hola, texto en movimiento!</h1>
 <h1 class="texto-ola">
   <span style="--i:1">H</span>

@@ -1,6 +1,6 @@
 // import { Component } from '@angular/core';
 import { Component, ElementRef, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { BiometriaDomainService } from '../../services/biometria-domain.service';
+import { BiometriaDomainService, RespuestaBiometrica } from '../../services/biometria-domain.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -22,25 +22,14 @@ export class ValidatorFacialComponent {
 
   private biometriaSub?: Subscription;
 
+  // Variable para guardar la respuesta y mostrarla en el HTML
+  resultadoBackend: RespuestaBiometrica | null = null;
+
   constructor(private biometriaService: BiometriaDomainService) { }
 
   ngOnInit(): void {
     // this.activarCamaraWeb();
   }
-
-  // activarCamaraWeb(): void {
-  //   navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } })
-  //     .then((mediaStream) => {
-  //       this.stream = mediaStream;
-  //       this.videoElement.nativeElement.srcObject = mediaStream;
-  //       this.estadoMensaje = '📷 Cámara lista. Coloca tu rostro frente a la pantalla.';
-  //     })
-  //     .catch((error) => {
-  //       this.estadoMensaje = '❌ No se pudo acceder a la cámara web. Verifica los permisos.';
-  //       console.error('Error webcam:', error);
-  //     });
-  // }
-
   // Activar la cámara
   public async activarCamara(): Promise<void> {
     try {
@@ -86,10 +75,18 @@ export class ValidatorFacialComponent {
         return;
       }
 
+      this.resultadoBackend = null;
+
       // 3. Consumir el Servicio de Dominio
       this.biometriaSub = this.biometriaService.verificarRostro(blob).subscribe({
         next: (resultado) => {
+
+
+
           this.cargando = false;
+          // Guardamos el JSON en nuestra variable para que el HTML lo vea
+          this.resultadoBackend = resultado;
+
           if (resultado.es_la_misma_persona) {
             this.estadoMensaje = `✅ ¡Acceso Concedido! (Confianza: ${resultado.distancia_matematica.toFixed(4)})`;
           } else {
