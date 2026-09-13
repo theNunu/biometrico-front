@@ -1,5 +1,5 @@
 // import { Component } from '@angular/core';
-import { Component, ElementRef, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, OnDestroy, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { BiometriaDomainService, RespuestaBiometrica } from '../../services/biometria-domain.service';
 import { Subscription } from 'rxjs';
 
@@ -25,7 +25,7 @@ export class ValidatorFacialComponent {
   // Variable para guardar la respuesta y mostrarla en el HTML
   resultadoBackend: RespuestaBiometrica | null = null;
 
-  constructor(private biometriaService: BiometriaDomainService) { }
+  constructor(private biometriaService: BiometriaDomainService, private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
     // this.activarCamaraWeb();
@@ -67,6 +67,7 @@ export class ValidatorFacialComponent {
     // 1. Dibujar el cuadro actual en el canvas oculto
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
+
     // 2. Extraer el blob de imagen en formato JPEG limpio
     canvas.toBlob((blob) => {
       if (!blob) {
@@ -74,6 +75,8 @@ export class ValidatorFacialComponent {
         this.cargando = false;
         return;
       }
+
+
 
       this.resultadoBackend = null;
 
@@ -92,7 +95,11 @@ export class ValidatorFacialComponent {
           } else {
             this.estadoMensaje = `❌ Acceso Denegado. El rostro no coincide con el registro.`;
           }
+
+          // 🚀 3. ¡LA MAGIA! Le avisa a Angular que redibuje el HTML inmediatamente
+          this.cdr.detectChanges();
         },
+
         error: (err) => {
           this.cargando = false;
           this.estadoMensaje = '🚨 Error de conexión o procesamiento en el servidor.';
@@ -100,6 +107,9 @@ export class ValidatorFacialComponent {
         }
       });
     }, 'image/jpeg', 0.90);
+
+    // Forzar renderizado también en caso de error
+    this.cdr.detectChanges();
   }
 
   ngOnDestroy(): void {
